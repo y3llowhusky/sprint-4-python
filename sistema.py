@@ -1,8 +1,6 @@
 import os
 from biblioteca import *
 
-criar_arquivos(arquivos)
-
 limpar_tela()
 
 # verifica se arquivo usuarios.txt está vazio
