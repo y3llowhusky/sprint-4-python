@@ -85,8 +85,19 @@ def salvar_ficha(ficha: dict, id_usuario: int) -> None:
 
 # função para listar fichas médicas do banco de dados
 def listar_fichas(id_usuario):
-    sql = "SELECT * FROM challenge_python_fichas_medicas WHERE id_usuario = :1"
-    return executar_comando(sql, {"1": id_usuario}, fetch=True)
+    sql = "SELECT id_ficha, id_usuario, nome, idade, sexo, altura, peso FROM challenge_python_fichas_medicas WHERE id_usuario = :1"
+    resultado = executar_comando(sql, {"1": id_usuario}, fetch=True)
+
+    if not resultado:
+        print("Não há fichas médicas cadastradas!")
+    else:
+        for ficha in resultado:
+            print(f"""{exibir_titulo(f"ficha médica id {ficha[0]}")}
+Nome do paciente: {ficha[2]}
+Idade do paciente: {ficha[3]}
+Sexo (M/F): {ficha[4]}
+Altura (m): {ficha[5]}m
+Peso (kg): {ficha[6]}kg""")
 
 # função para salvar consulta agendada no banco de dados
 def salvar_consulta(consulta, id_usuario: int) -> None:
@@ -105,8 +116,18 @@ def salvar_consulta(consulta, id_usuario: int) -> None:
 
 # função para listar as consultas presentes no banco de dados
 def listar_consultas(id_usuario):
-    sql = "SELECT * FROM challenge_python_consultas WHERE id_usuario = :1"
-    return executar_comando(sql, {"1": id_usuario}, fetch=True)
+    sql = "SELECT id_consulta, id_usuario, nome_paciente, dia, mes, ano, motivo, observacoes FROM challenge_python_consultas WHERE id_usuario = :1"
+    resultado = executar_comando(sql, {"1": id_usuario}, fetch=True)
+
+    if not resultado:
+        print("Não há consultas cadastradas!")
+    else:
+        for consulta in resultado:
+            print(f"""{exibir_titulo(f"consulta id {consulta[0]}")}
+Nome do paciente: {consulta[2]}
+Data: {consulta[3]}/{consulta[4]}/{consulta[5]}
+Motivo: {consulta[6]}
+Observações (se houver): {consulta[7]}""")
 
 # função para salvar exame agendado no banco de dados
 def salvar_exame(exame, id_usuario) -> None:
@@ -160,8 +181,6 @@ def apagar_usuario(login, senha) -> bool:
     executar_comando(delete, {"1": id_usuario}, fetch=False)
 
     return True
-
-
 
 
 
