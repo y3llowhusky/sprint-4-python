@@ -266,7 +266,7 @@ def preencher_dicionario(dicionario: dict) -> None:
             valor = input(f'{campo.upper()}: ')
 
             # verifica se valor digitado é vazio
-            if valor.strip() == '':
+            if "observações" not in campo.lower() and valor.strip() == '':
                 print('Campo em branco! Digite um valor válido.')
             else:
                 tipo = verificar_tipo(campo)
