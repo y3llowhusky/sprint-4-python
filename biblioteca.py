@@ -266,27 +266,6 @@ def verifica_data(dia: str, mes: str, ano: str) -> bool:
 
     return True
 
-# procedimento para adicionar o conteúdo de um dicionário em um arquivo txt
-def adicionar_conteudo(dicionario: dict, nome_arq: str) -> None:
-    # salva no arquivo os dados preenchidos no dicionário separados por linha
-    with open(nome_arq, "a+", encoding="utf-8") as arq:
-        for chave, valor in dicionario.items():
-            arq.write(f"{chave}: {valor}\n")
-        arq.write("\n")
-
-# procedimento para sobrescrever o conteúdo de um arquivo txt com o conteúdo de um dicionário
-def sobrescrever_conteudo(dicionario: dict, nome_arq: str) -> None:
-    # sobrescreve o conteúdo do arquivo com o conteúdo de um dicionário
-    with open(nome_arq, "w+", encoding="utf-8") as arq:
-        for chave, valor in dicionario.items():
-            arq.write(f"{chave}: {valor}\n")
-        arq.write("\n")
-
-def apagar_conteudo(nome_arq: str) -> None:
-    # sobrescreve o conteúdo do arquivo com uma string vazia
-    with open(nome_arq, "w+", encoding="utf-8") as arq:
-        arq.write('')
-
 # procedimento para preencher um dicionario e adiciona-lo a lista de dicionarios
 def preencher_dicionario(dicionario: dict) -> None:
     # preenche os values dos items do dicionario e adiciona o dicionario preenchido na lista de dicionarios
@@ -356,36 +335,6 @@ def validar_campo(campo: str, conteudo) -> bool:
         # retorna True caso seja outro campo
         case _:
             return True
-
-# procedimento para exibir os registros de uma lista
-def exibir_tabela(lista: list, nome_registro: str) -> None:
-    for indice, dicionario in enumerate(lista):
-        print(f'{nome_registro.capitalize()} {indice+1}')
-        # captura os campos e valores de cada dicionario
-        for chave, valor in dicionario.items():
-            print(f'{chave.capitalize()}{(15-len(chave))*'.'}: {valor}')
-
-# função para exibir o conteúdo de um arquivo na tela
-def exibir_arquivo(nome_arq: str) -> str:
-    with open(nome_arq, "r+", encoding="utf-8") as arq:
-        conteudo = arq.read()
-    return conteudo
-
-# procedimento para exibir os items de um dicionario
-def exibir_dicionario(dicionario: dict) -> None:
-    for campo, valor in dicionario.items():
-        print(f'{campo.upper()}: {valor}')
-
-# procedimento para criar os arquivos base do sistema (usuarios, fichas medicas, consultas e exames)
-def criar_arquivos(arquivos: dict) -> None:
-    # percorre lista de arquivos necessários no sistema
-    for nome_arq, conteudo in arquivos.items():
-        # cria arquivos com conteúdo inicial (chave dos dicionários)
-        try:
-            with open(nome_arq, "x", encoding="utf-8") as f:
-                f.write(conteudo)
-        except FileExistsError: # ignora criação caso arquivo já exista (se não for a primeira vez rodando sistema)
-            pass
 
 # procedimento para exibir titulo formatado
 def exibir_titulo(title: str) -> None:
