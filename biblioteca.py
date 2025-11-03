@@ -125,9 +125,9 @@ def listar_consultas(id_usuario):
         for consulta in resultado:
             print(f"""{exibir_titulo(f"consulta id {consulta[0]}")}
 Nome do paciente: {consulta[2]}
-Data: {consulta[3]}/{consulta[4]}/{consulta[5]}
-Motivo: {consulta[6]}
-Observações (se houver): {consulta[7]}""")
+Data da consulta: {consulta[3]}/{consulta[4]}/{consulta[5]}
+Motivo da consulta: {consulta[6]}
+Observações (se houver): {consulta[7] if consulta[7] else "Nenhuma"}""")
 
 # função para salvar exame agendado no banco de dados
 def salvar_exame(exame, id_usuario) -> None:
@@ -147,8 +147,19 @@ def salvar_exame(exame, id_usuario) -> None:
 
 # função para listar os exames presentes no banco de dados
 def listar_exames(id_usuario):
-    sql = "SELECT * FROM challenge_python_exames WHERE id_usuario = :1"
-    return executar_comando(sql, {"1": id_usuario}, fetch=True)
+    sql = "SELECT id_exame, id_usuario, nome_paciente, dia, mes, ano, nome_exame, motivo, observacoes FROM challenge_python_exames WHERE id_usuario = :1"
+    resultado = executar_comando(sql, {"1": id_usuario}, fetch=True)
+
+    if not resultado:
+        print("Não há exames cadastrados!")
+    else:
+        for exame in resultado:
+            print(f"""{exibir_titulo(f"exame id {exame[0]}")}
+Nome do paciente: {exame[2]}
+Data do exame: {exame[3]}/{exame[4]}/{exame[5]}
+Nome do exame: {exame[6]}
+Motivo do exame: {exame[7]}
+Observações (se houver): {exame[8] if exame[8] else "Nenhuma"}""")
 
 # função para apagar a ficha médica de um usuário do sistema
 def apagar_ficha(id_usuario):
