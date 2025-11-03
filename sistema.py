@@ -12,10 +12,11 @@ while True:
         exibir_titulo("menu de login")
         opcao = input("""Cadastrar novo usuário ou fazer login com usuário existente?
 
-1 - Cadastrar novo usuário
-2 - Logar com usuário existente
-3 - Apagar usuário existente
-                                
+[1] - Cadastrar novo usuário
+[2] - Logar com usuário existente
+[3] - Apagar usuário existente
+[0] - Sair          
+                      
 -> """)
 
         if opcao == "1":
@@ -53,7 +54,11 @@ while True:
                     print("Usuário não encontrado ou login / senha incorreto(a).")
             except Exception as e:
                 exibir_titulo(f"ERRO: {e}")
-
+        elif opcao == "0":
+            print('Obrigado por utilizar!')
+            input('Pressione qualquer tecla para sair . . . ')
+            # força o encerramento do programa, saindo do loop principal while True
+            exit()
         else:
             print("Opção inválida! Digite 1, 2 ou 3.")
         
