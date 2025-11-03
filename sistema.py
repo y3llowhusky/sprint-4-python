@@ -10,6 +10,7 @@ while True:
     while logando:
         limpar_tela()
         exibir_titulo("menu de login")
+        # input para escolher a opção no menu de login - cadastrar usuario, logar com usuario existente, apagar usuario ou sair do sistema
         opcao = input("""Cadastrar novo usuário ou fazer login com usuário existente?
 
 [1] - Cadastrar novo usuário
@@ -19,6 +20,7 @@ while True:
                       
 -> """)
 
+        # estrutura de if/else para corresponder a opção escolhida - conexão com banco de dados na opção 1
         if opcao == "1":
             limpar_tela()
             exibir_titulo("cadastro de novo usuário")
@@ -33,6 +35,7 @@ while True:
                 login = input("Login: ")
                 senha = input("Senha: ")
                 usuario_logado_id = verificar_login(login, senha)
+                # desativa flag do menu e ativa flag do programa principal caso o login esteja correto
                 if usuario_logado_id:
                     print("Login realizado com sucesso!")
                     logando = False
@@ -47,6 +50,7 @@ while True:
             login = input("Login do usuário a ser apagado: ")
             senha = input("Senha do usuário a ser apagado: ")
 
+            # tenta apagar o usuário digitado do banco e retorna erro (Exception as e) caso não haja usuário / esteja incorreto
             try:
                 if apagar_usuario(login, senha):
                     exibir_titulo("usuário apagado com sucesso!")
@@ -66,7 +70,7 @@ while True:
 
     while executa_programa:
         limpar_tela()
-        # exibe menu toda vez que retornar ao while
+        # exibe menu toda vez que retornar ao while executa_programa (flag ativada)
         exibir_titulo('HC AUXILIA - AREA DO CUIDADOR E FAMILIAR')
         print('''
 [1] - Cadastrar ficha médica
@@ -118,7 +122,7 @@ while True:
                 case 4: # exibir consultas
                     limpar_tela()
                     exibir_titulo("EXIBIR CONSULTAS")
-
+                    
                     listar_consultas(usuario_logado_id)
                     input('Pressione qualquer tecla para continuar . . . ')
 

@@ -5,14 +5,8 @@ from db import executar_comando
 
 # criação dos arquivos para armazenamento das informações dos usuários / pacientes
 
+# armazena o id do usuário logado no momento, para vincular todos os cadastros realizados no banco à esse usuário
 usuario_logado_id = None
-
-arquivos = {
-    "usuarios.txt": "placeholder",
-    "fichas_medicas.txt": "",
-    "consultas.txt": "",
-    "exames.txt": "",
-}
 
 ficha_medica = {
     "Nome": "",
@@ -45,6 +39,17 @@ exame = {
     "Motivo do exame": "",
     "Observações (se houver)": "",
 }
+
+# procedimento para exibir titulo formatado
+def exibir_titulo(title: str) -> None:
+    largura = len(title) * 2
+    print("=" * largura)
+    print(title.center(largura).upper())
+    print("=" * largura)
+
+# limpa a tela do terminal
+def limpar_tela() -> None:
+    os.system("cls" if os.name == "nt" else "clear") 
 
 # função para cadastro de usuário no banco
 def cadastrar_usuario(login: str, senha: str) -> None:
@@ -88,6 +93,7 @@ def listar_fichas(id_usuario):
     sql = "SELECT id_ficha, id_usuario, nome, idade, sexo, altura, peso FROM challenge_python_fichas_medicas WHERE id_usuario = :1"
     resultado = executar_comando(sql, {"1": id_usuario}, fetch=True)
 
+    # usa o retorno da query para listar os dados formatados, caso hajam
     if not resultado:
         print("Não há fichas médicas cadastradas!")
     else:
@@ -120,6 +126,7 @@ def listar_consultas(id_usuario):
     sql = "SELECT id_consulta, id_usuario, nome_paciente, dia, mes, ano, motivo, observacoes FROM challenge_python_consultas WHERE id_usuario = :1"
     resultado = executar_comando(sql, {"1": id_usuario}, fetch=True)
 
+    # usa o retorno da query para listar os dados formatados, caso hajam
     if not resultado:
         print("Não há consultas cadastradas!")
     else:
@@ -130,6 +137,7 @@ Data da consulta: {consulta[3]}/{consulta[4]}/{consulta[5]}
 Motivo da consulta: {consulta[6]}
 Observações (se houver): {consulta[7] if consulta[7] else "Nenhuma"}""")
             print("")
+
 # função para salvar exame agendado no banco de dados
 def salvar_exame(exame, id_usuario) -> None:
     sql = """INSERT INTO challenge_python_exames (nome_paciente, dia, mes, ano, nome_exame, motivo, observacoes, id_usuario)
@@ -151,6 +159,7 @@ def listar_exames(id_usuario):
     sql = "SELECT id_exame, id_usuario, nome_paciente, dia, mes, ano, nome_exame, motivo, observacoes FROM challenge_python_exames WHERE id_usuario = :1"
     resultado = executar_comando(sql, {"1": id_usuario}, fetch=True)
 
+    # usa o retorno da query para listar os dados formatados, caso hajam
     if not resultado:
         print("Não há exames cadastrados!")
     else:
@@ -162,6 +171,7 @@ Nome do exame: {exame[6]}
 Motivo do exame: {exame[7]}
 Observações (se houver): {exame[8] if exame[8] else "Nenhuma"}""")
             print("")
+
 # função para apagar a ficha médica de um usuário do sistema
 def apagar_ficha(id_usuario):
     select = """SELECT id_ficha, nome FROM challenge_python_fichas_medicas WHERE id_usuario = :1"""
@@ -180,6 +190,7 @@ def apagar_ficha(id_usuario):
         "5": ficha_medica["Peso (kg)"]
     }, fetch=False)
 
+# função para apagar um usuário do banco, através da opção 3 do menu de login no sistema principal. Retorna booleano de acordo com sucesso ou fracasso da solicitação
 def apagar_usuario(login, senha) -> bool:
     select = "SELECT id_usuario FROM challenge_python_usuarios WHERE login = :1 AND senha = :2"
     resultado = executar_comando(select, {"1": login, "2": senha}, fetch=True)
@@ -194,31 +205,38 @@ def apagar_usuario(login, senha) -> bool:
 
     return True
 
+def validar_campo(campo: str, conteudo) -> bool:
+    # verificação específica para campos sexo, idade, altura e peso
+    match campo.lower():
+        # verifica se campo é m ou f
+        case 'sexo (m/f)':
+            if conteudo.lower() == 'm' or conteudo.lower() == 'f':
+                return True
+            else:
+                return False
 
+        # verifica se idade está entre 0 e 200 anos
+        case 'idade (anos)':
+            return 0 < conteudo < 200
+        
+        # verifica se altura está entre 0.3m e 3m
+        case 'altura (m)':
+            return 0.3 < conteudo < 3.0
 
+        # verifica se peso está entre 1kg e 600kg
+        case 'peso (kg)':
+            return 1 < conteudo < 600
 
-
-
-
-
-
-
-
-
-
-
-
-
-# função para verificar se login e senha passados por parâmetros são equivalentes ao primeiro login e senha
-def verificar_senha(login_digitado: str, senha_digitada: str, nome_arq: str) -> bool:
-    with open(nome_arq, "r+", encoding="utf-8") as arq:
-        conteudo = arq.readlines()
-        # verifica se login e senha digitados passados como parâmetro e formatados são equivalentes
-        # a login e senha contidos no arquivo txt
-        if f'Login: {login_digitado}\n' == conteudo[0] and f'Senha: {senha_digitada}\n' == conteudo[1]:
+        # retorna True caso seja outro campo
+        case _:
             return True
-        else:
-            return False
+
+
+
+
+
+
+
 
 # Função para verificar validade da data inserida (válida e maior que data atual)
 # retorna booleano (True se data válida, False se data inválida)
@@ -311,39 +329,5 @@ def verificar_tipo(campo: str) -> type:
     
     return tipo_esperado
 
-def validar_campo(campo: str, conteudo) -> bool:
-    # verificação específica para campos sexo, idade, altura e peso
-    match campo.lower():
-        # verifica se campo é m ou f
-        case 'sexo (m/f)':
-            if conteudo.lower() == 'm' or conteudo.lower() == 'f':
-                return True
-            else:
-                return False
 
-        # verifica se idade está entre 0 e 200 anos
-        case 'idade (anos)':
-            return 0 < conteudo < 200
-        
-        # verifica se altura está entre 0.3m e 3m
-        case 'altura (m)':
-            return 0.3 < conteudo < 3.0
 
-        # verifica se peso está entre 1kg e 600kg
-        case 'peso (kg)':
-            return 1 < conteudo < 600
-
-        # retorna True caso seja outro campo
-        case _:
-            return True
-
-# procedimento para exibir titulo formatado
-def exibir_titulo(title: str) -> None:
-    largura = len(title) * 2
-    print("=" * largura)
-    print(title.center(largura).upper())
-    print("=" * largura)
-
-# limpa a tela do terminal
-def limpar_tela() -> None:
-    os.system("cls" if os.name == "nt" else "clear") 
