@@ -92,8 +92,8 @@ def listar_fichas(id_usuario):
         print("Não há fichas médicas cadastradas!")
     else:
         for ficha in resultado:
-            print(f"""{exibir_titulo(f"ficha médica id {ficha[0]}")}
-Nome do paciente: {ficha[2]}
+            exibir_titulo(f"ficha médica id {ficha[0]}")
+            print(f"""Nome do paciente: {ficha[2]}
 Idade do paciente: {ficha[3]}
 Sexo (M/F): {ficha[4]}
 Altura (m): {ficha[5]}m
@@ -123,8 +123,8 @@ def listar_consultas(id_usuario):
         print("Não há consultas cadastradas!")
     else:
         for consulta in resultado:
-            print(f"""{exibir_titulo(f"consulta id {consulta[0]}")}
-Nome do paciente: {consulta[2]}
+            exibir_titulo(f"consulta id {consulta[0]}")
+            print(f"""Nome do paciente: {consulta[2]}
 Data da consulta: {consulta[3]}/{consulta[4]}/{consulta[5]}
 Motivo da consulta: {consulta[6]}
 Observações (se houver): {consulta[7] if consulta[7] else "Nenhuma"}""")
@@ -154,8 +154,8 @@ def listar_exames(id_usuario):
         print("Não há exames cadastrados!")
     else:
         for exame in resultado:
-            print(f"""{exibir_titulo(f"exame id {exame[0]}")}
-Nome do paciente: {exame[2]}
+            exibir_titulo(f"exame id {exame[0]}")
+            print(f"""Nome do paciente: {exame[2]}
 Data do exame: {exame[3]}/{exame[4]}/{exame[5]}
 Nome do exame: {exame[6]}
 Motivo do exame: {exame[7]}
