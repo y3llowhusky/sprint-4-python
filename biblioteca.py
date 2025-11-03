@@ -98,6 +98,7 @@ Idade do paciente: {ficha[3]}
 Sexo (M/F): {ficha[4]}
 Altura (m): {ficha[5]}m
 Peso (kg): {ficha[6]}kg""")
+            print("")
 
 # função para salvar consulta agendada no banco de dados
 def salvar_consulta(consulta, id_usuario: int) -> None:
@@ -128,7 +129,7 @@ def listar_consultas(id_usuario):
 Data da consulta: {consulta[3]}/{consulta[4]}/{consulta[5]}
 Motivo da consulta: {consulta[6]}
 Observações (se houver): {consulta[7] if consulta[7] else "Nenhuma"}""")
-
+            print("")
 # função para salvar exame agendado no banco de dados
 def salvar_exame(exame, id_usuario) -> None:
     sql = """INSERT INTO challenge_python_exames (nome_paciente, dia, mes, ano, nome_exame, motivo, observacoes, id_usuario)
@@ -160,7 +161,7 @@ Data do exame: {exame[3]}/{exame[4]}/{exame[5]}
 Nome do exame: {exame[6]}
 Motivo do exame: {exame[7]}
 Observações (se houver): {exame[8] if exame[8] else "Nenhuma"}""")
-
+            print("")
 # função para apagar a ficha médica de um usuário do sistema
 def apagar_ficha(id_usuario):
     select = """SELECT id_ficha, nome FROM challenge_python_fichas_medicas WHERE id_usuario = :1"""

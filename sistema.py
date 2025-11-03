@@ -84,7 +84,7 @@ while True:
                     preencher_dicionario(ficha_medica)
                     salvar_ficha(ficha_medica, usuario_logado_id)
 
-                    exibir_titulo("Ficha médica cadastrada!")
+                    exibir_titulo("ficha médica cadastrada!")
                     input('Pressione qualquer tecla para continuar . . . ')
 
                 case 2: # exibir fichas médicas
@@ -107,7 +107,7 @@ while True:
                         else:
                             print('--\nData inválida! Tente novamente.\n--')
 
-                    exibir_titulo("Consulta marcada!")
+                    exibir_titulo("consulta marcada!")
                     input('Pressione qualquer tecla para continuar . . . ')
 
                 case 4: # exibir consultas
@@ -130,6 +130,7 @@ while True:
                         else:
                             print('--\nData inválida! Tente novamente.\n--')
 
+                    exibir_titulo("exame marcado!")
                     input('Pressione qualquer tecla para continuar . . . ')
 
                 case 6: # exibir exames
