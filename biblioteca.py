@@ -231,13 +231,6 @@ def validar_campo(campo: str, conteudo) -> bool:
         case _:
             return True
 
-
-
-
-
-
-
-
 # Função para verificar validade da data inserida (válida e maior que data atual)
 # retorna booleano (True se data válida, False se data inválida)
 def verifica_data(dia: str, mes: str, ano: str) -> bool:
