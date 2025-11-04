@@ -54,10 +54,23 @@ def exibir_titulo(title: str) -> None:
 def limpar_tela() -> None:
     os.system("cls" if os.name == "nt" else "clear") 
 
-# função para cadastro de usuário no banco
-def cadastrar_usuario(login: str, senha: str) -> None:
+# função para cadastro de usuário no banco de dados
+def cadastrar_usuario(login: str, senha: str) -> bool:
     sql = "INSERT INTO challenge_python_usuarios (login, senha) VALUES (:1, :2)"
     executar_comando(sql, {"1": login, "2": senha}, fetch=False)
+
+# função para atualizar a senha do usuário no banco de dados
+def atualizar_senha(id_usuario: int, senha_atual: str, nova_senha: str) -> None:
+    sql_verifica = "SELECT senha FROM challenge_python_usuarios WHERE id_usuario = :1"
+    resultado = executar_comando(sql_verifica, {"1": id_usuario}, fetch=True)
+
+    # verifica se senha atual está correta
+    if not resultado or resultado[0][0] != senha_atual:
+        return False
+    else:
+        sql_atualiza = "UPDATE challenge_python_usuarios SET senha = :1 WHERE id_usuario = :2"
+        executar_comando(sql_atualiza, {"1": nova_senha, "2": id_usuario}, fetch=False)
+        return True
 
 # função para verificar se login e senha digitados correspondem a algum valor no banco de dados
 def verificar_login(login: str, senha: str) -> int | None:

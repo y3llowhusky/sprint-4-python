@@ -80,6 +80,7 @@ while True:
 [5] - Marcar exames
 [6] - Exibir exames
 [7] - Voltar para tela de login
+[8] - Atualizar senha do usuário
 [0] - Sair\n''')
         opcao = input('-> ')
 
@@ -149,10 +150,24 @@ while True:
                     listar_exames(usuario_logado_id)
                     input("Pressione qualquer tecla para continuar . . . ")
 
-                case 7:
+                case 7: # voltar para tela de login
+                    limpar_tela()
                     # desativa flag de execução do programa principal e reativa flag de login do sistema, retornando ao menu de login
                     executa_programa = False
                     logando = True
+
+                case 8: # atualizar senha do usuário
+                    limpar_tela()
+                    exibir_titulo("ATUALIZAR SENHA DO USUÁRIO")
+                    senha_atual = input("Senha atual: ")
+                    nova_senha = input("Nova senha: ")
+
+                    if atualizar_senha(usuario_logado_id, senha_atual, nova_senha):
+                        print("Senha atualizada com sucesso!")
+                    else:
+                        print("Senha atual incorreta. Tente novamente.")
+
+                    input("Pressione qualquer tecla para continuar . . . ")
 
                 case 0: # sair
                     print('Obrigado por utilizar!')
@@ -160,10 +175,10 @@ while True:
                     # força o encerramento do programa, saindo do loop principal while True
                     exit()
 
-                case _:
+                case _: # opção inválida
                     print('Opção inválida! Tente novamente.')
                     input('Pressione qualquer tecla para continuar.')
 
-        except ValueError:
+        except ValueError: # trata erro caso a opção digitada não seja um número inteiro
             print('Opção inválida! Tente novamente.')
             input('Pressione qualquer tecla para continuar . . . ')
