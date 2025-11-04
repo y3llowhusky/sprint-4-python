@@ -1,5 +1,6 @@
 import requests
 import os
+import json
 from datetime import *
 import calendar
 from db import executar_comando
@@ -76,7 +77,19 @@ def apagar_dados_usuario(id_usuario) -> None:
     executar_comando("DELETE FROM challenge_python_consultas WHERE id_usuario = :1", {"1": id_usuario})
     executar_comando("DELETE FROM challenge_python_exames WHERE id_usuario = :1", {"1": id_usuario})
 
+def exportar_json(nome_arq: str, dados: list[dict]) -> None:
+    try:
+        pasta_exportacoes = "exportacoes"
+        os.makedirs(pasta_exportacoes, exist_ok=True)
 
+        caminho_arquivo = os.path.join(pasta_exportacoes, f"{nome_arq}.json")
+
+        with open(caminho_arquivo, "w", encoding="utf-8") as f:
+            json.dump(dados, f, indent=4, ensure_ascii=False)
+
+        print(f"\nDados exportados com sucesso para '{caminho_arquivo}'!\n")
+    except Exception as e:
+        print(f"Erro ao exportar dados para JSON: {e}")
 
 # função para salvar dados da ficha médica no banco de dados
 def salvar_ficha(ficha: dict, id_usuario: int) -> None:
@@ -102,6 +115,7 @@ def listar_fichas(id_usuario):
     if not resultado:
         print("Não há fichas médicas cadastradas!")
     else:
+        fichas_lista = []
         for ficha in resultado:
             try:
                 response = requests.get(f'https://viacep.com.br/ws/{ficha[7]}/json/')
@@ -121,6 +135,20 @@ Altura (m): {ficha[5]}m
 Peso (kg): {ficha[6]}kg
 Endereço: {endereco}""")
             print("")
+
+            fichas_lista.append({
+                "ID Ficha": ficha[0],
+                "Nome do paciente": ficha[2],
+                "Idade do paciente": ficha[3],
+                "Sexo (M/F)": ficha[4],
+                "Altura (m)": ficha[5],
+                "Peso (kg)": ficha[6],
+                "Endereço": endereco
+            })
+
+        exportar = input("Deseja exportar as fichas médicas para um arquivo JSON? (s/n): ").strip().lower()
+        if exportar == 's':
+            exportar_json("fichas_medicas", fichas_lista)
 
 # função para salvar consulta agendada no banco de dados
 def salvar_consulta(consulta, id_usuario: int) -> None:
@@ -146,6 +174,7 @@ def listar_consultas(id_usuario):
     if not resultado:
         print("Não há consultas cadastradas!")
     else:
+        consultas_lista = []
         for consulta in resultado:
             exibir_titulo(f"consulta id {consulta[0]}")
             print(f"""Nome do paciente: {consulta[2]}
@@ -153,6 +182,18 @@ Data da consulta: {consulta[3]}/{consulta[4]}/{consulta[5]}
 Motivo da consulta: {consulta[6]}
 Observações (se houver): {consulta[7] if consulta[7] else "Nenhuma"}""")
             print("")
+
+            consultas_lista.append({
+                "ID Consulta": consulta[0],
+                "Nome do paciente": consulta[2],
+                "Data da consulta": f"{consulta[3]}/{consulta[4]}/{consulta[5]}",
+                "Motivo da consulta": consulta[6],
+                "Observações (se houver)": consulta[7] if consulta[7] else "Nenhuma"
+            })
+
+        exportar = input("Deseja exportar as consultas para um arquivo JSON? (s/n): ").strip().lower()
+        if exportar == 's':
+            exportar_json("consultas", consultas_lista)
 
 # função para salvar exame agendado no banco de dados
 def salvar_exame(exame, id_usuario) -> None:
@@ -179,6 +220,7 @@ def listar_exames(id_usuario):
     if not resultado:
         print("Não há exames cadastrados!")
     else:
+        exames_lista = []
         for exame in resultado:
             exibir_titulo(f"exame id {exame[0]}")
             print(f"""Nome do paciente: {exame[2]}
@@ -187,6 +229,20 @@ Nome do exame: {exame[6]}
 Motivo do exame: {exame[7]}
 Observações (se houver): {exame[8] if exame[8] else "Nenhuma"}""")
             print("")
+
+            exames_lista.append({
+                "ID Exame": exame[0],
+                "Nome do paciente": exame[2],
+                "Data do exame": f"{exame[3]}/{exame[4]}/{exame[5]}",
+                "Nome do exame": exame[6],
+                "Motivo do exame": exame[7],
+                "Observações (se houver)": exame[8] if exame[8] else "Nenhuma"
+            })
+
+        exportar = input("Deseja exportar os exames para um arquivo JSON? (s/n): ").strip().lower()
+        if exportar == 's':
+            exportar_json("exames", exames_lista)
+
 
 # função para apagar a ficha médica de um usuário do sistema
 def apagar_ficha(id_usuario):
