@@ -108,7 +108,7 @@ def salvar_ficha(ficha: dict, id_usuario: int) -> None:
 
 # função para listar fichas médicas do banco de dados
 def listar_fichas(id_usuario):
-    sql = "SELECT id_ficha, id_usuario, nome, idade, sexo, altura, peso, cep FROM challenge_python_fichas_medicas WHERE id_usuario = :1"
+    sql = "SELECT id_ficha, id_usuario, nome, idade, sexo, altura, peso, cep FROM challenge_python_fichas_medicas WHERE id_usuario = :1 ORDER BY id_ficha"
     resultado = executar_comando(sql, {"1": id_usuario}, fetch=True)
 
     # usa o retorno da query para listar os dados formatados, caso hajam
@@ -167,7 +167,7 @@ def salvar_consulta(consulta, id_usuario: int) -> None:
 
 # função para listar as consultas presentes no banco de dados
 def listar_consultas(id_usuario):
-    sql = "SELECT id_consulta, id_usuario, nome_paciente, dia, mes, ano, motivo, observacoes FROM challenge_python_consultas WHERE id_usuario = :1"
+    sql = "SELECT id_consulta, id_usuario, nome_paciente, dia, mes, ano, motivo, observacoes FROM challenge_python_consultas WHERE id_usuario = :1 ORDER BY id_consulta"
     resultado = executar_comando(sql, {"1": id_usuario}, fetch=True)
 
     # usa o retorno da query para listar os dados formatados, caso hajam
@@ -213,7 +213,7 @@ def salvar_exame(exame, id_usuario) -> None:
 
 # função para listar os exames presentes no banco de dados
 def listar_exames(id_usuario):
-    sql = "SELECT id_exame, id_usuario, nome_paciente, dia, mes, ano, nome_exame, motivo, observacoes FROM challenge_python_exames WHERE id_usuario = :1"
+    sql = "SELECT id_exame, id_usuario, nome_paciente, dia, mes, ano, nome_exame, motivo, observacoes FROM challenge_python_exames WHERE id_usuario = :1 ORDER BY id_exame"
     resultado = executar_comando(sql, {"1": id_usuario}, fetch=True)
 
     # usa o retorno da query para listar os dados formatados, caso hajam
