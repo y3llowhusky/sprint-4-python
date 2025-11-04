@@ -1,3 +1,4 @@
+import requests
 import os
 from datetime import *
 import calendar
@@ -14,6 +15,7 @@ ficha_medica = {
     "Sexo (M/F)": "",
     "Altura (m)": "",
     "Peso (kg)": "",
+    "CEP (somente núm.)": ""
 }
 
 usuario = {
@@ -74,10 +76,12 @@ def apagar_dados_usuario(id_usuario) -> None:
     executar_comando("DELETE FROM challenge_python_consultas WHERE id_usuario = :1", {"1": id_usuario})
     executar_comando("DELETE FROM challenge_python_exames WHERE id_usuario = :1", {"1": id_usuario})
 
+
+
 # função para salvar dados da ficha médica no banco de dados
 def salvar_ficha(ficha: dict, id_usuario: int) -> None:
-    sql = """INSERT INTO challenge_python_fichas_medicas (nome, idade, sexo, altura, peso, id_usuario)
-            VALUES (:1, :2, :3, :4, :5, :6)"""
+    sql = """INSERT INTO challenge_python_fichas_medicas (nome, idade, sexo, altura, peso, cep, id_usuario)
+            VALUES (:1, :2, :3, :4, :5, :6, :7)"""
 
     executar_comando(sql, {
         "1": ficha["Nome"],
@@ -85,12 +89,13 @@ def salvar_ficha(ficha: dict, id_usuario: int) -> None:
         "3": ficha["Sexo (M/F)"].upper(),
         "4": ficha["Altura (m)"],
         "5": ficha["Peso (kg)"],
-        "6": id_usuario
+        "6": ficha["CEP (somente núm.)"],
+        "7": id_usuario
     }, fetch=False)
 
 # função para listar fichas médicas do banco de dados
 def listar_fichas(id_usuario):
-    sql = "SELECT id_ficha, id_usuario, nome, idade, sexo, altura, peso FROM challenge_python_fichas_medicas WHERE id_usuario = :1"
+    sql = "SELECT id_ficha, id_usuario, nome, idade, sexo, altura, peso, cep FROM challenge_python_fichas_medicas WHERE id_usuario = :1"
     resultado = executar_comando(sql, {"1": id_usuario}, fetch=True)
 
     # usa o retorno da query para listar os dados formatados, caso hajam
@@ -98,12 +103,23 @@ def listar_fichas(id_usuario):
         print("Não há fichas médicas cadastradas!")
     else:
         for ficha in resultado:
+            try:
+                response = requests.get(f'https://viacep.com.br/ws/{ficha[7]}/json/')
+                if response.status_code == 200:
+                    data = response.json()
+                    endereco = f"{data['logradouro']}, {data['bairro']}, {data['localidade']}-{data['uf']}"
+                else:
+                    endereco = "Endereço não encontrado - Erro ao consultar API"
+            except Exception as e:
+                endereco = f"Endereço não encontrado - Erro na conexão com a API: {e}"
+
             exibir_titulo(f"ficha médica id {ficha[0]}")
             print(f"""Nome do paciente: {ficha[2]}
 Idade do paciente: {ficha[3]}
 Sexo (M/F): {ficha[4]}
 Altura (m): {ficha[5]}m
-Peso (kg): {ficha[6]}kg""")
+Peso (kg): {ficha[6]}kg
+Endereço: {endereco}""")
             print("")
 
 # função para salvar consulta agendada no banco de dados
@@ -217,15 +233,26 @@ def validar_campo(campo: str, conteudo) -> bool:
 
         # verifica se idade está entre 0 e 200 anos
         case 'idade (anos)':
-            return 0 < conteudo < 200
+            return 0 < conteudo < 123
         
         # verifica se altura está entre 0.3m e 3m
         case 'altura (m)':
-            return 0.3 < conteudo < 3.0
+            return 0.3 < conteudo < 2.72
 
         # verifica se peso está entre 1kg e 600kg
         case 'peso (kg)':
             return 1 < conteudo < 600
+
+        case 'cep (somente núm.)':
+            # verifica se cep tem 8 dígitos
+            if len(str(conteudo)) != 8:
+                return False
+             # faz requisição para API e verifica se cep existe
+            response = requests.get(f'https://viacep.com.br/ws/{conteudo}/json/')
+            data = response.json()
+            if 'erro' in data:
+                return False
+            return True
 
         # retorna True caso seja outro campo
         case _:
