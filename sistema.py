@@ -7,6 +7,8 @@ while True:
     logando = True
     executa_programa = False
 
+    limpar_tela()
+
     while logando:
         limpar_tela()
         exibir_titulo("menu de login")
