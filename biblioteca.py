@@ -56,8 +56,15 @@ def limpar_tela() -> None:
 
 # função para cadastro de usuário no banco de dados
 def cadastrar_usuario(login: str, senha: str) -> bool:
-    sql = "INSERT INTO challenge_python_usuarios (login, senha) VALUES (:1, :2)"
-    executar_comando(sql, {"1": login, "2": senha}, fetch=False)
+    select = "SELECT * FROM challenge_python_usuarios WHERE login = :1"
+    resultado = executar_comando(select, {"1": login}, fetch=True)
+
+    if resultado:
+        return False
+    else:
+        sql = "INSERT INTO challenge_python_usuarios (login, senha) VALUES (:1, :2)"
+        executar_comando(sql, {"1": login, "2": senha}, fetch=False)
+        return True
 
 # função para atualizar a senha do usuário no banco de dados
 def atualizar_senha(id_usuario: int, senha_atual: str, nova_senha: str) -> None:

@@ -26,8 +26,10 @@ while True:
             exibir_titulo("cadastro de novo usuário")
             login = input("Login: ")
             senha = input("Senha: ")
-            cadastrar_usuario(login, senha)
-            print("Usuário cadastrado com sucesso!")
+            if cadastrar_usuario(login, senha):
+                print("Usuário cadastrado com sucesso!")
+            else:
+                print("Erro: Usuário já existe. Tente um login diferente.")
         elif opcao == "2":
             while True:
                 limpar_tela()
