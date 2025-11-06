@@ -263,25 +263,6 @@ Observações (se houver): {exame[8] if exame[8] else "Nenhuma"}""")
         if exportar == 's':
             exportar_json("exames", exames_lista)
 
-
-# função para apagar a ficha médica de um usuário do sistema
-def apagar_ficha(id_usuario):
-    select = """SELECT id_ficha, nome FROM challenge_python_fichas_medicas WHERE id_usuario = :1"""
-    fichas = executar_comando(select, {"1": id_usuario})
-
-    delete = """DELETE FROM challenge_python_fichas_medicas WHERE """
-
-    if not fichas:
-        print("Nenhuma ficha médica cadastrada.")
-
-    executar_comando(delete, {
-        "1": ficha_medica["Nome"],
-        "2": ficha_medica["Idade (anos)"],
-        "3": ficha_medica["Sexo (M/F)"],
-        "4": ficha_medica["Altura (m)"],
-        "5": ficha_medica["Peso (kg)"]
-    }, fetch=False)
-
 # função para apagar um usuário do banco, através da opção 3 do menu de login no sistema principal. Retorna booleano de acordo com sucesso ou fracasso da solicitação
 def apagar_usuario(login, senha) -> bool:
     select = "SELECT id_usuario FROM challenge_python_usuarios WHERE login = :1 AND senha = :2"
